@@ -6,7 +6,7 @@
   "bin": {
     "pcs": "./bin/www"
   },
-  "repository": "https://github.com/rainbowzx/picssso-cli.git",
+  "repository": "https://github.com/rainbowzx/picasso-cli.git",
   "scripts": {
     "commit": "git-cz",
     "compile": "babel src -d dist --extensions '.ts' ",

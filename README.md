@@ -1,4 +1,4 @@
-# picssso-cli
+# picasso-cli
 
 > basic command
 
