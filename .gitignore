@@ -2,4 +2,3 @@
 node_modules
 .DS_*
 package-lock
-dist
