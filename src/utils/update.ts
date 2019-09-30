@@ -3,6 +3,7 @@ import log from './log';
 import inquirer from 'inquirer';
 import ora from "ora";
 import { spawn } from "child_process";
+const process = require('process');
 import { UPDATEPROMPT } from './constants';
 
 export const checkVersion = () => {
@@ -28,21 +29,35 @@ export const checkVersion = () => {
 export const updateCli = () => {
   return new Promise(async resolve => {
     const promptArr = UPDATEPROMPT;
-    let { dwTypes } = await inquirer.prompt(promptArr);
+    console.log(promptArr);
+    let { npmType } = await inquirer.prompt(promptArr);
     const spinner = ora(`更新picasso-cli中`);
     let status:any = '';
-    switch (dwTypes) {
+    console.log('dwTypes', npmType);
+    switch (npmType) {
       case "npm":
         spinner.start();
-        status = spawn("npm.cmd", ["install", "picasso-cli", "-g"]);
+        status = spawn("npm", ["install", "picasso-cli", "-g"], {
+          stdio: 'inherit',
+          // 仅在当前运行环境为 Windows 时，才使用 shell
+          shell: process.platform === 'win32'
+        });
         break;
       case "cnpm":
         spinner.start();
-        status = spawn("cnpm.cmd", ["install", "picasso-cli", "-g"]);
+        status = spawn("cnpm", ["install", "picasso-cli", "-g"], {
+          stdio: 'inherit',
+          // 仅在当前运行环境为 Windows 时，才使用 shell
+          shell: process.platform === 'win32'
+        });
         break;
       case "yarn":
         spinner.start();
-        status = spawn("yarn.cmd", ["add", "picasso-cli", "-g"]);
+        status = spawn("yarn", ["add", "picasso-cli", "-g"], {
+          stdio: 'inherit',
+          // 仅在当前运行环境为 Windows 时，才使用 shell
+          shell: process.platform === 'win32'
+        });
         break;
     }
     status.stdout.on("data", (data:any) => {
@@ -52,6 +67,9 @@ export const updateCli = () => {
       spinner.succeed();
       log.succes("更新成功")
       resolve();
+    });
+    status.on('error', (err:any) => {
+      console.error('启动子进程失败', err);
     });
   });
 }
